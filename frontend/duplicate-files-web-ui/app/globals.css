@@ -1,0 +1,227 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #0a0a0a;
+  
+  /* Professional grayscale palette */
+  --gray-50: #fafafa;
+  --gray-100: #f5f5f5;
+  --gray-200: #e5e5e5;
+  --gray-300: #d4d4d4;
+  --gray-400: #a3a3a3;
+  --gray-500: #737373;
+  --gray-600: #525252;
+  --gray-700: #404040;
+  --gray-800: #262626;
+  --gray-900: #171717;
+  
+  /* Accent colors - minimal use */
+  --accent-primary: #000000;
+  --accent-secondary: #404040;
+  --accent-danger: #262626;
+  
+  /* File type category colors - grayscale */
+  --file-type-images: #525252;
+  --file-type-documents: #404040;
+  --file-type-videos: #737373;
+  --file-type-audio: #595959;
+  --file-type-archives: #262626;
+  --file-type-other: #a3a3a3;
+  
+  /* Relationship highlighting colors - subtle grayscale */
+  --highlight-primary: #262626;
+  --highlight-secondary: #525252;
+  --highlight-hover: #f5f5f5;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  
+  /* File type category colors */
+  --color-file-type-images: var(--file-type-images);
+  --color-file-type-documents: var(--file-type-documents);
+  --color-file-type-videos: var(--file-type-videos);
+  --color-file-type-audio: var(--file-type-audio);
+  --color-file-type-archives: var(--file-type-archives);
+  --color-file-type-other: var(--file-type-other);
+  
+  /* Relationship highlighting */
+  --color-highlight-primary: var(--highlight-primary);
+  --color-highlight-secondary: var(--highlight-secondary);
+  --color-highlight-hover: var(--highlight-hover);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #fafafa;
+    
+    /* Adjust colors for dark mode */
+    --gray-50: #171717;
+    --gray-100: #262626;
+    --gray-200: #404040;
+    --gray-300: #525252;
+    --gray-400: #737373;
+    --gray-500: #a3a3a3;
+    --gray-600: #d4d4d4;
+    --gray-700: #e5e5e5;
+    --gray-800: #f5f5f5;
+    --gray-900: #fafafa;
+    
+    --accent-primary: #ffffff;
+    --accent-secondary: #e5e5e5;
+    --accent-danger: #d4d4d4;
+    
+    --file-type-images: #d4d4d4;
+    --file-type-documents: #e5e5e5;
+    --file-type-videos: #a3a3a3;
+    --file-type-audio: #b8b8b8;
+    --file-type-archives: #f5f5f5;
+    --file-type-other: #737373;
+    
+    --highlight-primary: #fafafa;
+    --highlight-secondary: #d4d4d4;
+    --highlight-hover: #262626;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Accessibility: Focus Indicators - Professional black/white */
+/* Ensure all interactive elements have visible focus indicators */
+*:focus-visible {
+  outline: 2px solid #000000;
+  outline-offset: 2px;
+}
+
+@media (prefers-color-scheme: dark) {
+  *:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 2px;
+  }
+}
+
+/* Enhanced focus for buttons */
+button:focus-visible {
+  outline: 2px solid #000000;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.1);
+}
+
+@media (prefers-color-scheme: dark) {
+  button:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.1);
+  }
+}
+
+/* Enhanced focus for checkboxes and inputs */
+input[type="checkbox"]:focus-visible {
+  outline: 2px solid #000000;
+  outline-offset: 2px;
+}
+
+@media (prefers-color-scheme: dark) {
+  input[type="checkbox"]:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 2px;
+  }
+}
+
+/* Keyboard navigation support */
+.keyboard-nav *:focus {
+  outline: 2px solid #000000;
+  outline-offset: 2px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .keyboard-nav *:focus {
+    outline: 2px solid #ffffff;
+    outline-offset: 2px;
+  }
+}
+
+/* Skip to main content link for screen readers */
+.skip-to-main {
+  position: absolute;
+  left: -9999px;
+  z-index: 999;
+  padding: 1rem;
+  background-color: #000000;
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.skip-to-main:focus {
+  left: 50%;
+  transform: translateX(-50%);
+  top: 1rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  .skip-to-main {
+    background-color: #ffffff;
+    color: black;
+  }
+}
+
+/* Notification Toast Animations */
+@keyframes slide-in {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-in {
+  animation: slide-in 0.3s ease-out;
+}
+
+/* Professional scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f5f5f5;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #a3a3a3;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #737373;
+}
+
+@media (prefers-color-scheme: dark) {
+  ::-webkit-scrollbar-track {
+    background: #171717;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: #525252;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: #737373;
+  }
+}

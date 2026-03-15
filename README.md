@@ -1,180 +1,313 @@
-# Duplicate Files Organizer
+# Duplicate Files Management System
 
-A Spring Boot 3.3 command-line application that intelligently scans directories, identifies duplicate files using SHA-256 hashing, and automatically organizes them into a structured folder hierarchy.
+A full-stack application for detecting and managing duplicate files with a modern web interface.
 
-## What It Does
-
-This application helps you clean up cluttered directories by:
-
-1. **Scanning** - Recursively scans a specified directory to discover all files
-2. **Hashing** - Computes SHA-256 hashes to identify duplicate files with 100% accuracy
-3. **Analyzing** - Groups files into unique and duplicate categories
-4. **Organizing** - Automatically moves ALL files from your specified folder (including the drive name) into a newly created timestamped folder with pattern `Duplicate-Files-Organiser_YYYYMMDD_HHMMSS`:
-   - Unique files are preserved in type-specific folders under `Unique\`
-   - Duplicate files are renamed with indices (e.g., `photo(1).jpg`, `photo(2).jpg`) under `Duplicates\`
-   - Document files are further organized by date (latest/older based on 30-day threshold)
-5. **Cleanup** - After organizing:
-   - Checks for empty folders in your original entered folder
-   - Deletes all empty folders manually
-   - Moves all folders from inside `Unique\` back to your original entered folder like :--
-   ```
-   Unique\
-   │   ├── Images\
-   │   ├── Videos\
-   │   ├── Documents\
-   │   │   ├── latest\
-   │   │   └── older\
-   │   ├── Audio\
-   │   └── Other\
-   ``` 
-
-6. **Verifying** - Validates file integrity after moving using hash verification
-7. **Reporting** - Provides detailed statistics on the operation
-
-## Folder Structure
-
-The application creates an organized structure on your drive:
-
-```
-<Drive>:\Duplicate-Files-Organiser_YYYYMMDD_HHMMSS\
-├── Unique\
-│   ├── Images\
-│   ├── Videos\
-│   ├── Documents\
-│   │   ├── latest\
-│   │   └── older\
-│   ├── Audio\
-│   └── Other\
-└── Duplicates\
-    ├── Images\
-    ├── Videos\
-    ├── Documents\
-    │   ├── latest\
-    │   └── older\
-    ├── Audio\
-    └── Other\
-```
-
-**After processing**, all folders from inside `Unique\` are moved back to your original entered folder, and empty folders are deleted.
-
-## Requirements
-
-- Java 21
-- Maven 3.6+
-- Windows Operating System (designed for Windows machines)
-
-## How to Use
-
-### 1. Build the Application
+## 🚀 Quick Start
 
 ```bash
-mvnw.cmd clean package
+# Terminal 1: Start Backend
+cd backend/dupilcate-files-manager
+./mvnw spring-boot:run
+
+# Terminal 2: Start Frontend
+cd frontend/duplicate-files-web-ui
+npm install && npm run dev
+
+# Open browser: http://localhost:3000
 ```
 
-### 2. Run the Application
+See [QUICK_START.md](./QUICK_START.md) for detailed instructions.
 
+## 📋 Overview
+
+This project consists of two integrated applications:
+
+### Backend (Spring Boot)
+- **Technology**: Java 17, Spring Boot, Maven
+- **Port**: 8080
+- **Features**:
+  - File system scanning
+  - SHA-256 hash calculation
+  - Duplicate detection algorithm
+  - REST API for file operations
+  - CORS-enabled for web access
+
+### Frontend (Next.js)
+- **Technology**: Next.js 16, React 19, TypeScript, Tailwind CSS
+- **Port**: 3000
+- **Features**:
+  - Modern, responsive UI
+  - Real-time duplicate visualization
+  - Bulk file operations
+  - Error handling with retry
+  - Dark mode support
+
+## 🏗️ Architecture
+
+```
+Frontend (Next.js)  ←→  Backend (Spring Boot)  ←→  File System
+    Port 3000              Port 8080
+```
+
+The frontend communicates with the backend via REST API:
+- `GET /api/analysis` - Retrieve duplicate analysis
+- `POST /api/scan` - Scan directory for duplicates
+- `DELETE /api/files` - Delete single file
+- `DELETE /api/files/bulk` - Delete multiple files
+
+## 📁 Project Structure
+
+```
+dupilcate-files-management/
+├── backend/
+│   └── dupilcate-files-manager/          # Spring Boot application
+│       ├── src/main/java/                # Java source code
+│       │   └── com/filemanager/duplicates/
+│       │       ├── controller/           # REST controllers
+│       │       ├── service/              # Business logic
+│       │       ├── scanner/              # File scanning
+│       │       ├── hash/                 # Hash calculation
+│       │       ├── analyzer/             # Duplicate detection
+│       │       ├── model/                # Data models
+│       │       └── config/               # Configuration (CORS)
+│       ├── src/main/resources/           # Application properties
+│       └── pom.xml                       # Maven dependencies
+│
+├── frontend/
+│   └── duplicate-files-web-ui/           # Next.js application
+│       ├── app/                          # Next.js app directory
+│       │   ├── page.tsx                  # Main page component
+│       │   └── layout.tsx                # Root layout
+│       ├── components/                   # React components
+│       │   ├── TwoColumnLayout.tsx       # Main layout
+│       │   ├── LeftSidebar.tsx           # Navigation
+│       │   ├── NotificationContainer.tsx # Notifications
+│       │   └── ErrorBoundary.tsx         # Error handling
+│       ├── lib/
+│       │   └── api/
+│       │       └── duplicateFilesAPI.ts  # API client
+│       ├── types/                        # TypeScript types
+│       ├── .env.local                    # Environment config
+│       └── package.json                  # Dependencies
+│
+├── INTEGRATION_GUIDE.md                  # Detailed integration docs
+├── QUICK_START.md                        # Quick start guide
+├── test-integration.ps1                  # Windows test script
+└── test-integration.sh                   # Linux/Mac test script
+```
+
+## 🔧 Prerequisites
+
+- **Java**: 17 or higher
+- **Node.js**: 18 or higher
+- **Maven**: Included via wrapper (mvnw)
+- **npm**: Comes with Node.js
+
+## 📖 Documentation
+
+- **[QUICK_START.md](./QUICK_START.md)** - Get started in 5 minutes
+- **[INTEGRATION_GUIDE.md](./INTEGRATION_GUIDE.md)** - Detailed integration documentation
+- **Backend README**: `backend/dupilcate-files-manager/README.md`
+- **Frontend Package**: `frontend/duplicate-files-web-ui/package.json`
+
+## 🧪 Testing
+
+### Test Backend Connection
 ```bash
-mvnw.cmd spring-boot:run
+# Windows
+.\test-integration.ps1
+
+# Linux/Mac
+./test-integration.sh
 ```
 
-### 3. Follow the Interactive Prompts
-
-The application will guide you through the process:
-
-```
-=============================================================
-DUPLICATE FILES ORGANIZER
-=============================================================
-
-Enter the path to scan for duplicate files:
-> D:\MyPhotos
-```
-
-**Important**: Enter the full path to the directory you want to organize.
-
-**Path Format Examples**:
-- ✅ Correct: `D:\MyWork\Home-Phone\sun-sunita-in`
-- ❌ Incorrect: `"D:\MyWork\Home-Phone\sun-sunita-in"` (do not use quotes)
-- ✅ Correct: `C:\Users\YourName\Documents`
-- ✅ Correct: `E:\Photos\Vacation2024`
-
-**Note**: Do not wrap the path in quotes when entering it.
-
-### 4. Watch the Progress
-
-The application will display progress through each stage:
-
-- **Scanning Files** - Discovers all files in the directory
-- **Computing File Hashes** - Calculates SHA-256 hashes for duplicate detection
-- **Analyzing Duplicates** - Identifies unique and duplicate files
-- **Creating Folder Structure** - Sets up the organized directory structure
-- **Organizing Files** - Moves files to their appropriate locations
-
-### 5. Review the Report
-
-After completion, you'll see a detailed summary:
-
-```
-Files Scanned: 1,234
-Unique Files Moved: 856
-Duplicate Files Moved: 378
-Success Rate: 100.0%
-Root Folder: D:\Duplicate-Files-Organiser_20260314_143022
-```
-
-### 6. Continue or Exit
-
-The application will ask if you want to organize another directory or exit.
-
-## File Type Categories
-
-The application automatically categorizes files:
-
-- **Images**: `.jpg`, `.jpeg`, `.png`, `.gif`, `.bmp`, `.svg`, `.webp`, `.ico`
-- **Videos**: `.mp4`, `.avi`, `.mkv`, `.mov`, `.wmv`, `.flv`, `.webm`, `.m4v`
-- **Documents**: `.pdf`, `.doc`, `.docx`, `.xls`, `.xlsx`, `.ppt`, `.pptx`, `.txt`, `.csv`, `.odt`, `.rtf`
-- **Audio**: `.mp3`, `.wav`, `.flac`, `.aac`, `.ogg`, `.wma`, `.m4a`
-- **Other**: All other file types
-
-## Features
-
-- **Accurate Duplicate Detection** - Uses SHA-256 hashing to ensure 100% accuracy
-- **Safe File Operations** - Uses atomic move operations to prevent data loss
-- **Hash Verification** - Verifies file integrity after moving
-- **Collision Handling** - Automatically resolves filename conflicts
-- **Date-Based Organization** - Documents are organized by modification date (latest/older)
-- **Progress Tracking** - Real-time progress updates during processing
-- **Error Handling** - Graceful handling of permission errors and inaccessible files
-- **Detailed Reporting** - Comprehensive statistics and error logs
-
-## Running Tests
-
+### Manual API Testing
 ```bash
-mvnw.cmd test
+# Health check
+curl http://localhost:8080/api/health
+
+# Scan directory
+curl -X POST http://localhost:8080/api/scan \
+  -H "Content-Type: application/json" \
+  -d '{"path":"C:/Users/YourUser/Documents"}'
+
+# Get analysis
+curl http://localhost:8080/api/analysis
 ```
 
-## Project Structure
+## 🎯 Features
 
+### Duplicate Detection
+- SHA-256 hash-based comparison
+- Fast batch processing
+- Handles large file sets
+- Groups duplicates by hash
+
+### File Operations
+- Single file deletion
+- Bulk deletion with progress
+- Optimistic UI updates
+- Automatic rollback on failure
+
+### User Interface
+- Clean, professional design
+- Dark mode support
+- Real-time notifications
+- Keyboard navigation
+- Accessibility compliant
+
+### Error Handling
+- Network error detection
+- Timeout handling (30s)
+- User-friendly error messages
+- Retry functionality
+- Graceful degradation
+
+## 🔐 Security
+
+- Path validation on backend
+- File permission checks
+- CORS configuration
+- Input sanitization
+- No arbitrary code execution
+
+## 🚀 Deployment
+
+### Development
+```bash
+# Backend
+cd backend/dupilcate-files-manager
+./mvnw spring-boot:run
+
+# Frontend
+cd frontend/duplicate-files-web-ui
+npm run dev
 ```
-src/main/java/com/filemanager/duplicates/
-├── analyzer/          # Duplicate detection logic
-├── cli/               # Command-line interface
-├── hash/              # SHA-256 hash computation
-├── model/             # Data models
-├── organizer/         # File organization and folder creation
-├── reporter/          # Result reporting
-├── scanner/           # Directory scanning
-└── validator/         # Path validation
+
+### Production
+
+#### Backend
+```bash
+cd backend/dupilcate-files-manager
+./mvnw clean package
+java -jar target/duplicate-files-manage-0.0.1-SNAPSHOT.jar
 ```
 
-## Safety Notes
+#### Frontend
+```bash
+cd frontend/duplicate-files-web-ui
+npm run build
+npm start
+```
 
-- The application moves files (not copies), so ensure you have backups if needed
-- Files are moved using atomic operations to prevent corruption
-- Hash verification ensures file integrity after moving
-- The application will retry validation up to 3 times for invalid paths
-- Permission errors are logged but don't stop the entire process
+Or deploy to Vercel/Netlify (update API URL in `.env.local`)
 
-## License
+## 🛠️ Configuration
 
-This project is built with Spring Boot 3.3 and Java 21.
+### Backend Configuration
+File: `backend/dupilcate-files-manager/src/main/resources/application.properties`
+
+```properties
+server.port=8080
+spring.application.name=duplicate-files-manage
+```
+
+### Frontend Configuration
+File: `frontend/duplicate-files-web-ui/.env.local`
+
+```env
+NEXT_PUBLIC_API_BASE_URL=http://localhost:8080/api
+```
+
+### CORS Configuration
+File: `backend/dupilcate-files-manager/src/main/java/com/filemanager/duplicates/config/CorsConfig.java`
+
+Allowed origins:
+- `http://localhost:3000`
+- `http://localhost:3001`
+- `http://127.0.0.1:3000`
+- `http://127.0.0.1:3001`
+
+## 🐛 Troubleshooting
+
+### Backend Issues
+
+**Port 8080 already in use**
+```bash
+# Find process using port 8080
+netstat -ano | findstr :8080  # Windows
+lsof -i :8080                 # Linux/Mac
+
+# Kill the process or change port in application.properties
+```
+
+**Java version mismatch**
+```bash
+java -version  # Should be 17 or higher
+```
+
+### Frontend Issues
+
+**Port 3000 already in use**
+- Next.js will automatically use port 3001
+
+**Module not found**
+```bash
+cd frontend/duplicate-files-web-ui
+rm -rf node_modules package-lock.json
+npm install
+```
+
+### Integration Issues
+
+**CORS errors**
+1. Verify backend is running: `curl http://localhost:8080/api/health`
+2. Check frontend port (must be 3000 or 3001)
+3. Clear browser cache
+
+**Connection refused**
+1. Ensure backend is running
+2. Check firewall settings
+3. Verify `.env.local` has correct URL
+
+## 📊 API Endpoints
+
+| Method | Endpoint | Description | Request Body |
+|--------|----------|-------------|--------------|
+| GET | `/api/health` | Health check | - |
+| GET | `/api/analysis` | Get cached analysis | - |
+| POST | `/api/scan` | Scan directory | `{"path": "..."}` |
+| DELETE | `/api/files` | Delete file | `{"path": "..."}` |
+| DELETE | `/api/files/bulk` | Delete files | `{"paths": [...]}` |
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
+
+## 📝 License
+
+This project is for educational and personal use.
+
+## 🙏 Acknowledgments
+
+- Spring Boot for the robust backend framework
+- Next.js for the modern frontend framework
+- Tailwind CSS for the styling system
+
+## 📞 Support
+
+For issues or questions:
+1. Check the documentation
+2. Review console logs
+3. Run the integration tests
+4. Verify all services are running
+
+---
+
+**Status**: ✅ Fully Integrated and Operational
+
+**Last Updated**: 2026-03-15

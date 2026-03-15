@@ -1,0 +1,180 @@
+# Duplicate Files Organizer
+
+A Spring Boot 3.3 command-line application that intelligently scans directories, identifies duplicate files using SHA-256 hashing, and automatically organizes them into a structured folder hierarchy.
+
+## What It Does
+
+This application helps you clean up cluttered directories by:
+
+1. **Scanning** - Recursively scans a specified directory to discover all files
+2. **Hashing** - Computes SHA-256 hashes to identify duplicate files with 100% accuracy
+3. **Analyzing** - Groups files into unique and duplicate categories
+4. **Organizing** - Automatically moves ALL files from your specified folder (including the drive name) into a newly created timestamped folder with pattern `Duplicate-Files-Organiser_YYYYMMDD_HHMMSS`:
+   - Unique files are preserved in type-specific folders under `Unique\`
+   - Duplicate files are renamed with indices (e.g., `photo(1).jpg`, `photo(2).jpg`) under `Duplicates\`
+   - Document files are further organized by date (latest/older based on 30-day threshold)
+5. **Cleanup** - After organizing:
+   - Checks for empty folders in your original entered folder
+   - Deletes all empty folders manually
+   - Moves all folders from inside `Unique\` back to your original entered folder like :--
+   ```
+   Unique\
+   │   ├── Images\
+   │   ├── Videos\
+   │   ├── Documents\
+   │   │   ├── latest\
+   │   │   └── older\
+   │   ├── Audio\
+   │   └── Other\
+   ``` 
+
+6. **Verifying** - Validates file integrity after moving using hash verification
+7. **Reporting** - Provides detailed statistics on the operation
+
+## Folder Structure
+
+The application creates an organized structure on your drive:
+
+```
+<Drive>:\Duplicate-Files-Organiser_YYYYMMDD_HHMMSS\
+├── Unique\
+│   ├── Images\
+│   ├── Videos\
+│   ├── Documents\
+│   │   ├── latest\
+│   │   └── older\
+│   ├── Audio\
+│   └── Other\
+└── Duplicates\
+    ├── Images\
+    ├── Videos\
+    ├── Documents\
+    │   ├── latest\
+    │   └── older\
+    ├── Audio\
+    └── Other\
+```
+
+**After processing**, all folders from inside `Unique\` are moved back to your original entered folder, and empty folders are deleted.
+
+## Requirements
+
+- Java 21
+- Maven 3.6+
+- Windows Operating System (designed for Windows machines)
+
+## How to Use
+
+### 1. Build the Application
+
+```bash
+mvnw.cmd clean package
+```
+
+### 2. Run the Application
+
+```bash
+mvnw.cmd spring-boot:run
+```
+
+### 3. Follow the Interactive Prompts
+
+The application will guide you through the process:
+
+```
+=============================================================
+DUPLICATE FILES ORGANIZER
+=============================================================
+
+Enter the path to scan for duplicate files:
+> D:\MyPhotos
+```
+
+**Important**: Enter the full path to the directory you want to organize.
+
+**Path Format Examples**:
+- ✅ Correct: `D:\MyWork\Home-Phone\sun-sunita-in`
+- ❌ Incorrect: `"D:\MyWork\Home-Phone\sun-sunita-in"` (do not use quotes)
+- ✅ Correct: `C:\Users\YourName\Documents`
+- ✅ Correct: `E:\Photos\Vacation2024`
+
+**Note**: Do not wrap the path in quotes when entering it.
+
+### 4. Watch the Progress
+
+The application will display progress through each stage:
+
+- **Scanning Files** - Discovers all files in the directory
+- **Computing File Hashes** - Calculates SHA-256 hashes for duplicate detection
+- **Analyzing Duplicates** - Identifies unique and duplicate files
+- **Creating Folder Structure** - Sets up the organized directory structure
+- **Organizing Files** - Moves files to their appropriate locations
+
+### 5. Review the Report
+
+After completion, you'll see a detailed summary:
+
+```
+Files Scanned: 1,234
+Unique Files Moved: 856
+Duplicate Files Moved: 378
+Success Rate: 100.0%
+Root Folder: D:\Duplicate-Files-Organiser_20260314_143022
+```
+
+### 6. Continue or Exit
+
+The application will ask if you want to organize another directory or exit.
+
+## File Type Categories
+
+The application automatically categorizes files:
+
+- **Images**: `.jpg`, `.jpeg`, `.png`, `.gif`, `.bmp`, `.svg`, `.webp`, `.ico`
+- **Videos**: `.mp4`, `.avi`, `.mkv`, `.mov`, `.wmv`, `.flv`, `.webm`, `.m4v`
+- **Documents**: `.pdf`, `.doc`, `.docx`, `.xls`, `.xlsx`, `.ppt`, `.pptx`, `.txt`, `.csv`, `.odt`, `.rtf`
+- **Audio**: `.mp3`, `.wav`, `.flac`, `.aac`, `.ogg`, `.wma`, `.m4a`
+- **Other**: All other file types
+
+## Features
+
+- **Accurate Duplicate Detection** - Uses SHA-256 hashing to ensure 100% accuracy
+- **Safe File Operations** - Uses atomic move operations to prevent data loss
+- **Hash Verification** - Verifies file integrity after moving
+- **Collision Handling** - Automatically resolves filename conflicts
+- **Date-Based Organization** - Documents are organized by modification date (latest/older)
+- **Progress Tracking** - Real-time progress updates during processing
+- **Error Handling** - Graceful handling of permission errors and inaccessible files
+- **Detailed Reporting** - Comprehensive statistics and error logs
+
+## Running Tests
+
+```bash
+mvnw.cmd test
+```
+
+## Project Structure
+
+```
+src/main/java/com/filemanager/duplicates/
+├── analyzer/          # Duplicate detection logic
+├── cli/               # Command-line interface
+├── hash/              # SHA-256 hash computation
+├── model/             # Data models
+├── organizer/         # File organization and folder creation
+├── reporter/          # Result reporting
+├── scanner/           # Directory scanning
+└── validator/         # Path validation
+```
+
+## Safety Notes
+
+- The application moves files (not copies), so ensure you have backups if needed
+- Files are moved using atomic operations to prevent corruption
+- Hash verification ensures file integrity after moving
+- The application will retry validation up to 3 times for invalid paths
+- Permission errors are logged but don't stop the entire process
+
+## License
+
+This project is built with Spring Boot 3.3 and Java 21.
